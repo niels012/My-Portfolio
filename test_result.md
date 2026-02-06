@@ -171,8 +171,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "POST /api/contact - Create contact submission"
-    - "GET /api/contact - List contact submissions"
+    - "Contact form with EmailJS + Backend integration"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
