@@ -101,3 +101,73 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Recreate portfolio website for Nilo Urmeneta (Web Designer & Webflow Developer) with hero section, projects, services, and a contact form that sends emails via EmailJS and stores submissions in database"
+
+backend:
+  - task: "POST /api/contact - Create contact submission"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented POST /api/contact endpoint to store contact form submissions in MongoDB"
+
+  - task: "GET /api/contact - List contact submissions"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented GET /api/contact endpoint to retrieve all submissions sorted by date"
+
+  - task: "PATCH /api/contact/{id}/read - Mark submission as read"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented PATCH endpoint to mark submissions as read"
+
+frontend:
+  - task: "Contact form with EmailJS + Backend integration"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ContactSection.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Contact form sends email via EmailJS and saves to backend database in parallel"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "POST /api/contact - Create contact submission"
+    - "GET /api/contact - List contact submissions"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Backend implementation complete. Please test: 1) POST /api/contact with name, email, subject, message fields 2) GET /api/contact to verify submissions are stored 3) PATCH /api/contact/{id}/read to mark as read"
