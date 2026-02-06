@@ -39,8 +39,8 @@ const ContactSection = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      // EmailJS send
-      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      // Send email via EmailJS and save to backend in parallel
+      const emailPromise = fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -59,7 +59,18 @@ const ContactSection = () => {
         })
       });
 
-      if (response.ok) {
+      // Save to backend database
+      const backendPromise = axios.post(`${API}/contact`, {
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
+
+      // Wait for both to complete
+      const [emailResponse] = await Promise.all([emailPromise, backendPromise]);
+
+      if (emailResponse.ok) {
         setStatus({
           type: 'success',
           message: 'Thank you! Your message has been sent successfully.'
@@ -69,6 +80,7 @@ const ContactSection = () => {
         throw new Error('Failed to send message');
       }
     } catch (error) {
+      console.error('Contact form error:', error);
       setStatus({
         type: 'error',
         message: 'Oops! Something went wrong. Please try again later.'
