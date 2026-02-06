@@ -87,6 +87,51 @@ async def get_status_checks():
     
     return status_checks
 
+
+# Contact Submission Endpoints
+@api_router.post("/contact", response_model=ContactSubmission, status_code=201)
+async def create_contact_submission(input: ContactSubmissionCreate):
+    """Create a new contact submission"""
+    submission_dict = input.model_dump()
+    submission_obj = ContactSubmission(**submission_dict)
+    
+    # Convert to dict and serialize datetime to ISO string for MongoDB
+    doc = submission_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.contact_submissions.insert_one(doc)
+    logger.info(f"New contact submission from {input.name} ({input.email})")
+    return submission_obj
+
+
+@api_router.get("/contact", response_model=List[ContactSubmission])
+async def get_contact_submissions():
+    """Get all contact submissions"""
+    submissions = await db.contact_submissions.find({}, {"_id": 0}).to_list(1000)
+    
+    # Convert ISO string timestamps back to datetime objects
+    for submission in submissions:
+        if isinstance(submission.get('created_at'), str):
+            submission['created_at'] = datetime.fromisoformat(submission['created_at'])
+    
+    # Sort by created_at descending (newest first)
+    submissions.sort(key=lambda x: x.get('created_at', datetime.min), reverse=True)
+    return submissions
+
+
+@api_router.patch("/contact/{submission_id}/read")
+async def mark_submission_read(submission_id: str):
+    """Mark a contact submission as read"""
+    result = await db.contact_submissions.update_one(
+        {"id": submission_id},
+        {"$set": {"is_read": True}}
+    )
+    if result.matched_count == 0:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return {"message": "Submission marked as read"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
