@@ -10,10 +10,10 @@ import { personalInfo } from '../data/mock';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// EmailJS Configuration
-const EMAILJS_SERVICE_ID = 'service_bz7bm1n';
-const EMAILJS_TEMPLATE_ID = 'template_srwhx51';
-const EMAILJS_PUBLIC_KEY = 'wUx5A8QFgcjhnbG-L';
+// EmailJS Configuration from environment variables
+const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
